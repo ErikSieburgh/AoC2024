@@ -1,13 +1,22 @@
-# Ignore compiled files
-*.o
-*.out
-*.exe
+# Ignore build directory
+build/
 
-# Ignore logs and temporary files
-*.log
-/temp/
-
-# Ignore system files
+# Ignore temporary or system files
 .DS_Store
-Thumbs.db
+*.log
+*.tmp
 
+# Ignore editor/IDE config files
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Ignore compiled binaries (optional if you're not committing them)
+*.exe
+*.out
+*.o
+*.a
+*.so
+*.dll
+*.dylib
