@@ -1,9 +1,10 @@
 #include <iostream>
 
-int main() {
+int main()
+{
     std::cout << "Hello, Advent of Code!" << std::endl;
 
-    int day = 1;
+    int day = 2;
     std::cout << "Testing Day " << day << "!" << std::endl;
 
     return 0;
