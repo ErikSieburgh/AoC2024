@@ -1,2 +1,89 @@
 My Project
 This is the README of the Advent of Code 2024
+
+To allow building only a specific day in your Advent of Code project, you can modify the setup to use CMake's **options** and **conditional building**. This way, you can specify which day to build during configuration.
+
+---
+
+### **Updated Setup**
+
+1. **Add an Option to Select a Specific Day**  
+   Modify the root `CMakeLists.txt` to include a variable for selecting a specific day. If no day is specified, all days will be built.
+
+   Updated root `CMakeLists.txt`:
+   ```cmake
+   cmake_minimum_required(VERSION 3.10)
+   project(AoC24)
+
+   # Set the C++ standard
+   set(CMAKE_CXX_STANDARD 17)
+   set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+   # Add an option to specify the day to build
+   option(SPECIFIC_DAY "Build only a specific day (01, 02, ... 25)" OFF)
+
+   # Add the functions directory
+   add_subdirectory(functions)
+
+   # If a specific day is requested, build only that day's subdirectory
+   if(SPECIFIC_DAY)
+       string(FORMAT subdir "%02d" ${SPECIFIC_DAY})
+       if(EXISTS "${CMAKE_SOURCE_DIR}/${subdir}/CMakeLists.txt")
+           add_subdirectory(${subdir})
+       else()
+           message(FATAL_ERROR "Challenge ${subdir} does not exist.")
+       endif()
+   else()
+       # Add all challenges
+       foreach(day RANGE 1 25)
+           string(FORMAT subdir "%02d" ${day})
+           if(EXISTS "${CMAKE_SOURCE_DIR}/${subdir}/CMakeLists.txt")
+               add_subdirectory(${subdir})
+           endif()
+       endforeach()
+   endif()
+   ```
+
+2. **Build a Specific Day**  
+   When generating the build system with CMake, pass the desired day as an option:
+   ```bash
+   cmake -S . -B build -DSPECIFIC_DAY=01
+   cmake --build build
+   ```
+   This builds only the executable for **Day 01**.
+
+3. **Build All Days (Default)**  
+   If you don't specify the `SPECIFIC_DAY` option, all challenges will be built:
+   ```bash
+   cmake -S . -B build
+   cmake --build build
+   ```
+
+---
+
+### **Optional: Cleaner Output**
+To make it easier to find executables, you can customize the output directory for each day's build. Add this line to each day's `CMakeLists.txt`:
+
+Example (`01/CMakeLists.txt`):
+```cmake
+set_target_properties(day01 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/01)
+```
+
+Now, executables will be organized under `build/bin/<day_number>/`.
+
+---
+
+### **Testing the Setup**
+To verify the setup:
+1. **Configure for Day 02**:
+   ```bash
+   cmake -S . -B build -DSPECIFIC_DAY=02
+   ```
+2. **Build**:
+   ```bash
+   cmake --build build
+   ```
+3. **Run the Executable**:
+   ```bash
+   ./build/02/day02
+   ```
