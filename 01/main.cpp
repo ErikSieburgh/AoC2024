@@ -14,6 +14,52 @@
     \author Erik Sieburgh
 */
 
+int sum_distances(std::vector<int> left, std::vector<int> right)
+{
+    std::sort(left.begin(), left.end());
+    std::sort(right.begin(), right.end());
+
+    std::vector<int> distance;
+
+    // We have two sorted lists. Now if we just take the distance between each of the rows of the vector, we get the distances we want.
+    // TODO compute distance between lists
+    for (int i = 0; i < left.size(); ++i)
+    {
+        int left_element = left.at(i);
+        int right_element = right.at(i);
+        int temp_distance = std::abs(left_element - right_element);
+        distance.push_back(temp_distance);
+    }
+    // Add distances all together
+    auto sum_of_distances = std::reduce(distance.begin(), distance.end());
+
+    return sum_of_distances;
+}
+// Helper lambda function to print key-value pairs
+auto print_key_value = [](const auto &key, const auto &value)
+{
+    std::cout << "Key:[" << key << "] Value:[" << value << "]\n";
+};
+
+int similarity_score(const std::vector<int> left, const std::vector<int> right)
+{
+
+    int similarity_score = 0; // Initialize the similarity score to a value.
+
+    std::unordered_map<int, int> right_counts;
+    for (int i = 0; i < right.size(); ++i)
+    {
+        right_counts[right[i]]++;
+    }
+
+    for (int i = 0; i < left.size(); ++i)
+    {
+        int temp = left[i] * right_counts[left[i]];
+        similarity_score += temp;
+    }
+    return similarity_score;
+}
+
 int main()
 {
     std::ifstream inputFile("01/input.txt");
@@ -50,61 +96,16 @@ int main()
         }
     }
 
-    std::sort(vector1.begin(), vector1.end());
-    std::sort(vector2.begin(), vector2.end());
-
-    std::vector<int> distance;
-
-    // We have two sorted lists. Now if we just take the distance between each of the rows of the vector, we get the distances we want.
-    // TODO compute distance between lists
-    for (int i = 0; i < vector1.size(); ++i)
-    {
-        int vector_element1 = vector1.at(i);
-        int vector_element2 = vector2.at(i);
-        int temp_distance = std::abs(vector_element1 - vector_element2);
-        distance.push_back(temp_distance);
-    }
-
-    // Add distances all together
-    auto result = std::reduce(distance.begin(), distance.end());
-
     // Print result of exercise 01.1
     std::cout << "Hello, Advent of Code!" << std::endl;
 
     int day = 1;
     std::cout << "Testing Day " << day << "!" << std::endl;
 
-    std::cout << "Results 01.1 =  " << result << std::endl;
+    std::cout << "Results 01.1 =  " << sum_distances(vector1, vector2) << std::endl;
+
+    std::cout << "Results 01.2 =  " << similarity_score(vector1, vector2) << std::endl;
 
     inputFile.close();
     return 0;
 }
-/**
-
-
-    std::regex pattern("(\d+)\s+(\d+)");
-    std::vector<int> list1;
-    std::vector<int> list2;
-
-    // Read every line and do the following line separately.
-    while (std::getline(inputFile, line))
-    {
-        auto numbers_begin = std::sregex_iterator(line.begin(), line.end(), pattern);
-        auto numbers_end = std::sregex_iterator();
-
-        for (std::sregex_iterator i = numbers_begin; i != numbers_end; ++i)
-        {
-            std::smatch match = *i;
-            std::string match_str = match.str();
-            std::cout << match_str << '\n';
-        }
-    }
-
-    std::cout << "Hello, Advent of Code!" << std::endl;
-
-
-    return 0;
-}
-
-
- */
